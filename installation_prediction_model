@@ -1,0 +1,33 @@
+# import numpy as np
+import pandas as pd
+from sklearn import linear_model
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import svm #support vector machine
+from sklearn.svm import SVR
+from sklearn.cross_validation import train_test_split
+#import tensorflow as tf
+%matplotlib inline
+import matplotlib.pyplot as plt
+from sklearn.tree import export_graphviz
+from sklearn import tree
+#load data fix_train,x_test,y_train,y_test = train_test_split(df_x,df_y,test_size=0.2,random_state=4)le
+data_file = pd.read_csv('dataset_trimmed.csv', low_memory=False)
+data_file.head()
+# One-hot Encode Features -- Convert String's to Binary variable. Then Seperate Label and Features. 
+data_file.fillna(value=0, inplace=True) #Converts NaN to 0. Required for Decision Tree logic
+onehot = pd.get_dummies(data_file)
+df_y = onehot['installed?'] #Label
+df_x = onehot.loc[:,'Average Shading':'Channel_The Home Depot'] #Features
+
+print(onehot.columns)
+
+print(onehot.shape)
+
+x_train,x_test,y_train,y_test = train_test_split(df_x,df_y,test_size=0.2,random_state=4)
+clf = RandomForestClassifier(n_jobs=2, random_state=0)
+clf= clf.fit(x_train,y_train)
+
+y_train_pred = cross_val_predict(clf,x_train,y_train, cv=3)
+print(f1_score(y_train, y_train_pred))
+
+list(zip(x_train, clf.feature_importances_))
